@@ -1,0 +1,92 @@
+<html>
+<head>
+<script type="text/javascript">
+function getStringById(id) {
+  var element = document.getElementById(id);
+  var str = element.value;
+  if (str == undefined) {
+    str = element.innerHTML;
+  }
+  return (str == undefined) ? "" : str;
+}
+</script>
+</head>
+<body>
+<div id="area1">
+大事な人と毎日食べるものだから、
+手をかけなくても、おいしいものを
+国内最大規模の食品販売サイトＯｉｓｉｘ(おいしっくす)。
+安心はあたりまえ、おいしく・忙しくてもつづけやすく・カラダにいい食材を毎週、
+旬の野菜やフルーツ・パン・牛乳・お肉など2400商品の中から、お客様のご希望に
+あわせてお好きな時間に、全国にお届けしています。
+</div><br>
+<input id="search" type="text" value="しく・忙しくてもつづけや">
+<script type="text/javascript">
+function BMSkip(str) {
+  var skip_offset = new Array();
+
+  for (var i = 0; i < str.length-1; i++) {
+    skip_offset[str.charCodeAt(i)] = str.length - i - 1;
+    // console.log(str.charCodeAt(i));
+  }
+
+  //連想配列で検索文字が含まれているかをチェック　例）skip_offset["k"]
+  this.skip = function(text, pos) {
+    var offset = skip_offset[text.charCodeAt(pos)];
+    console.log("pos　"+pos);
+    console.log("text.charCodeAt(pos) " + text.charCodeAt(pos));
+    console.log("offset "+ offset);
+    return (offset != undefined) ? offset : str.length;
+  }
+}
+
+String.prototype.findBM = function(str) {
+  var bm_skip = new BMSkip(str);
+  var last = str.length-1;　//検索文字の長さ
+
+  //全文をサーチ文字でチェック　例）「ももたろう」であれば　5文字つづ
+  /*
+   pos += bm_skip.skip(this,pos) がBM法の味噌
+   検索文字が見つからなかったら、文字数分移動　例）「ももたろう」であれば　5文字移動
+   検索文字が一部でも含まれていた場合は「末尾から見て何番目にあるか」で移動
+  */
+  for(var pos = last; pos < this.length; pos += bm_skip.skip(this,pos)) {
+    var i = pos;
+    var j = last;
+
+
+      // console.log("this.charAt(i)"+this.charAt(i));
+
+    console.log("pos "+pos)
+    // console.log("last "+last)
+    // console.log("bm_skip.skip(this,pos)", bm_skip.skip(this,pos));
+    // console.log("last "+last);
+    // console.log("this.length "+ this.length);
+
+    while (j >= 0) {
+      //一致しなかったら離脱
+      if (this.charAt(i) != str.charAt(j)) {
+        break;
+      }
+      i--;
+      j--;
+    }
+    //一致したら
+    if(j < 0) {
+      console.log("一致したよ")
+      return i+1;
+    }
+  }
+  return null;
+}
+function findTextAreaBM(text_id, search_id) {
+  var text = getStringById(text_id);
+  var search = getStringById(search_id);
+  console.log("text.findBM(search)"+text.findBM(search));
+}
+</script>
+<input type="button" onClick="findTextAreaBM('area1','search');" value="findBM">
+<!-- 末尾3 -->
+
+</body>
+</html>
